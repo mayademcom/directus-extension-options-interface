@@ -2,7 +2,6 @@
   "name": "directus-extension-multiple-choice-questions-interface",
   "description": "A repeater interface for creating multiple choice questions with drag & drop reordering and configurable correct answer validation.",
   "version": "1.0.0",
-  "private": true,
   "keywords": [],
   "files": [
     "dist"
