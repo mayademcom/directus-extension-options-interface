@@ -1,7 +1,7 @@
 {
   "name": "directus-extension-multiple-choice-questions-interface",
   "description": "A repeater interface for creating multiple choice questions with drag & drop reordering and configurable correct answer validation.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "keywords": [
     "directus",
@@ -12,12 +12,14 @@
     "questions"
   ],
   "files": [
-    "src"
+    "dist"
   ],
   "directus:extension": {
     "type": "interface",
+    "path": "dist/index.js",
     "source": "src/index.js",
-    "host": "^11.0.0"
+    "host": "^11.0.0",
+    "hidden": false
   },
   "scripts": {
     "build": "directus-extension build",
