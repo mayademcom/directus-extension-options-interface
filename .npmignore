@@ -1,6 +1,5 @@
 node_modules/
-src/
-.git/
-.github/
-*.md
+dist/
 .env
+.github/
+.gitignore
