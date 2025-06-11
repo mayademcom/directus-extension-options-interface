@@ -67,26 +67,26 @@
 
             <div class="item-fields">
               <div v-if="has_correct_answer" class="field-group">
-                <label :id="`correct-answer-label-${item._id}`" class="field-label">Correct Answer</label>
                 <v-checkbox
                     :model-value="item.is_correct"
                     @update:model-value="setCorrectAnswer(index, $event)"
-                    :aria-labelledby="`correct-answer-label-${item._id}`"
+                    aria-label="Correct answer"
+                    label="Correct answer"
                 />
               </div>
 
               <div class="field-group">
-                <label :id="`content-label-${item._id}`" class="field-label">Content</label>
                 <div class="block-editor-wrapper">
                   <interface-input-block-editor
                       :value="item.text"
                       @input="updateItemText(index, $event)"
-                      :placeholder="'Enter option content...'"
+                      aria-label="Option content"
+                      label="Option content"
+                      placeholder="Enter option content..."
                       :tools="content_tools"
                       :bordered="true"
                       :disabled="disabled"
                       :key="`block-editor-${item._id}`"
-                      :aria-labelledby="`content-label-${item._id}`"
                   />
                 </div>
               </div>
