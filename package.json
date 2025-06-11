@@ -1,6 +1,9 @@
 {
   "name": "@mayademcom/directus-extension-multiple-choice-questions-interface",
   "description": "A sophisticated repeater interface for Directus CMS that enables creation of multiple choice questions with drag & drop reordering, rich content editing, and flexible validation rules. Perfect for quizzes, surveys, and educational content management.",
+  "icon": "extension",
+  "version": "0.0.0",
+  "author": "Mayadem",
   "license": "MIT",
   "keywords": [
     "directus",
@@ -10,6 +13,14 @@
     "quiz",
     "questions"
   ],
+  "readmeFilename": "README.md",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mayademcom/directus-extension-multiple-choice-questions-interface"
+  },
   "files": [
     "dist"
   ],
@@ -23,6 +34,8 @@
   "scripts": {
     "build": "directus-extension build",
     "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link",
+    "validate": "directus-extension validate",
     "release": "release-it"
   },
   "dependencies": {
@@ -31,10 +44,7 @@
   "devDependencies": {
     "@directus/extensions-sdk": "^13.0.0",
     "@release-it/conventional-changelog": "^10.0.1",
+    "conventional-changelog-cli": "^5.0.0",
     "release-it": "^19.0.1"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "0.0.1"
+  }
 }
