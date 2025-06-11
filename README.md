@@ -4,7 +4,7 @@
 > drop reordering, rich content editing, and flexible validation rules. Perfect for quizzes, surveys, and educational
 > content management.
 
-[![npm version](https://img.shields.io/npm/v/@mayademcom/directus-extension-multiple-choice-questions-interface.svg?style=flat-square)](https://www.npmjs.com/package/mayademcom_directus-extension-multiple-choice-questions-interface)
+[![npm version](https://img.shields.io/npm/v/@mayademcom/directus-extension-multiple-choice-questions-interface.svg?style=flat-square)](https://www.npmjs.com/package/@mayademcom/directus-extension-multiple-choice-questions-interface)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mayademcom_directus-extension-multiple-choice-questions-interface&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mayademcom_directus-extension-multiple-choice-questions-interface)
 [![TypeScript](https://img.shields.io/badge/Vue.js-42b883?style=flat-square&logo=vue.js&logoColor=white)](https://www.vuejs.org/)
 [![Directus](https://img.shields.io/badge/Directus-263238?style=flat-square&logo=directus&logoColor=white)](https://directus.io/)
