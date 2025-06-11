@@ -1,5 +1,5 @@
 {
-  "name": "@mayademcom/directus-extension-multiple-choice-questions-interface",
+  "name": "@mayademcom/directus-extension-options-interface",
   "description": "A sophisticated repeater interface for Directus CMS that enables creation of multiple choice questions with drag & drop reordering, rich content editing, and flexible validation rules. Perfect for quizzes, surveys, and educational content management.",
   "icon": "extension",
   "version": "1.0.0",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mayademcom/directus-extension-multiple-choice-questions-interface"
+    "url": "https://github.com/mayademcom/directus-extension-options-interface"
   },
   "files": [
     "dist"
