@@ -67,15 +67,16 @@
 
             <div class="item-fields">
               <div v-if="has_correct_answer" class="field-group">
-                <label class="field-label">Correct Answer</label>
+                <label :id="`correct-answer-label-${item._id}`" class="field-label">Correct Answer</label>
                 <v-checkbox
                     :model-value="item.is_correct"
                     @update:model-value="setCorrectAnswer(index, $event)"
+                    :aria-labelledby="`correct-answer-label-${item._id}`"
                 />
               </div>
 
               <div class="field-group">
-                <label class="field-label">Content</label>
+                <label :id="`content-label-${item._id}`" class="field-label">Content</label>
                 <div class="block-editor-wrapper">
                   <interface-input-block-editor
                       :value="item.text"
@@ -85,6 +86,7 @@
                       :bordered="true"
                       :disabled="disabled"
                       :key="`block-editor-${item._id}`"
+                      :aria-labelledby="`content-label-${item._id}`"
                   />
                 </div>
               </div>
@@ -244,11 +246,9 @@ export default {
             items.value[index].is_correct = true;
           }
         }
-      } else {
+      } else if (items.value[index]) {
         // Uncheck the selected item
-        if (items.value[index]) {
-          items.value[index].is_correct = false;
-        }
+        items.value[index].is_correct = false;
       }
       emitUpdate();
     };
