@@ -23,13 +23,16 @@
   },
   "scripts": {
     "build": "directus-extension build",
-    "dev": "directus-extension build -w --no-minify"
+    "dev": "directus-extension build -w --no-minify",
+    "release": "release-it"
   },
   "dependencies": {
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "^13.0.0"
+    "@directus/extensions-sdk": "^13.0.0",
+    "@release-it/conventional-changelog": "^10.0.1",
+    "release-it": "^19.0.1"
   },
   "publishConfig": {
     "access": "public"
