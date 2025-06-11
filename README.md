@@ -1,11 +1,11 @@
-# Directus Multiple Choice Questions Interface
+# Directus Options Interface
 
 > A sophisticated repeater interface for Directus CMS that enables creation of multiple choice questions with drag &
 > drop reordering, rich content editing, and flexible validation rules. Perfect for quizzes, surveys, and educational
 > content management.
 
-[![npm version](https://img.shields.io/npm/v/@mayademcom/directus-extension-multiple-choice-questions-interface.svg?style=flat-square)](https://www.npmjs.com/package/@mayademcom/directus-extension-multiple-choice-questions-interface)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mayademcom_directus-extension-multiple-choice-questions-interface&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mayademcom_directus-extension-multiple-choice-questions-interface)
+[![npm version](https://img.shields.io/npm/v/@mayademcom/directus-extension-options-interface.svg?style=flat-square)](https://www.npmjs.com/package/@mayademcom/directus-extension-options-interface)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mayademcom_directus-extension-options-interface&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mayademcom_directus-extension-options-interface)
 [![TypeScript](https://img.shields.io/badge/Vue.js-42b883?style=flat-square&logo=vue.js&logoColor=white)](https://www.vuejs.org/)
 [![Directus](https://img.shields.io/badge/Directus-263238?style=flat-square&logo=directus&logoColor=white)](https://directus.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -38,7 +38,7 @@
 cd your-directus-project
 
 # Install the extension via npm
-npm i @mayademcom/directus-extension-multiple-choice-questions-interface
+npm i @mayademcom/directus-extension-options-interface
 
 # Start Directus
 npx directus start
@@ -48,16 +48,16 @@ npx directus start
 
 ```bash
 # Clone or download the extension
-git clone https://github.com/mayademcom/directus-extension-multiple-choice-questions-interface.git
+git clone https://github.com/mayademcom/directus-extension-options-interface.git
 
 # Navigate to your Directus project
 cd your-directus-project
 
 # Copy extension to Directus extensions directory
-cp -r directus-extension-multiple-choice-questions-interface extensions/
+cp -r directus-extension-options-interface extensions/
 
 # Install dependencies
-cd extensions/directus-extension-multiple-choice-questions-interface
+cd extensions/directus-extension-options-interface
 npm install
 
 # Build the extension
