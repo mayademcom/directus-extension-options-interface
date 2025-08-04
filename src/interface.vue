@@ -27,7 +27,7 @@
       <draggable
           v-else
           v-model="items"
-          @end="emitUpdate"
+          @end="handleDragEnd"
           item-key="_id"
           handle=".drag-handle"
           class="repeater-items"
@@ -75,13 +75,60 @@
                 />
               </div>
 
+              <div v-if="enable_images" class="field-group">
+                <label class="field-label">Option Image</label>
+                <div class="image-field">
+                  <div v-if="!item.image" class="image-upload-area">
+                    <v-upload
+                        from-url
+                        :from-user="true"
+                        :from-library="true"
+                        :folder="image_folder"
+                        :filter="{
+                          type: {
+                            _in: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+                          }
+                        }"
+                        @input="handleImageUpload(index, $event)"
+                        :key="`upload-${item._id}`"
+                    />
+                  </div>
+
+                  <div v-else class="image-selected">
+                    <div class="image-preview">
+                      <img
+                          :src="getImageUrl(item.image)"
+                          alt="Option image preview"
+                          class="preview-image"
+                          @error="handleImageError(index)"
+                      />
+                      <div class="image-overlay">
+                        <v-button
+                            @click="clearImage(index)"
+                            small
+                            icon
+                            rounded
+                            v-tooltip="'Remove Image'"
+                            :disabled="disabled"
+                        >
+                          <v-icon name="delete" />
+                        </v-button>
+                      </div>
+                    </div>
+                    <div class="image-info">
+                      <small>{{ getImageDisplayName(item.image) }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div class="field-group">
+                <label class="field-label">Option Content</label>
                 <div class="block-editor-wrapper">
                   <interface-input-block-editor
                       :value="item.text"
                       @input="updateItemText(index, $event)"
                       aria-label="Option content"
-                      label="Option content"
                       placeholder="Enter option content..."
                       :tools="content_tools"
                       :bordered="true"
@@ -142,6 +189,14 @@ export default {
       type: Number,
       default: 1,
     },
+    enable_images: {
+      type: Boolean,
+      default: false,
+    },
+    image_folder: {
+      type: String,
+      default: 'f6be9cef-b3f5-41da-9d86-6b4d3da6a4b4',
+    },
     content_tools: {
       type: Array,
       default: () => ['header', 'paragraph', 'nestedlist', 'quote'],
@@ -155,6 +210,21 @@ export default {
   setup(props, {emit}) {
     const items = ref([]);
 
+    const emitUpdate = () => {
+      if (!Array.isArray(items.value)) {
+        emit('input', []);
+        return;
+      }
+
+      const value = items.value.map(item => ({
+        _id: item._id,
+        is_correct: Boolean(item.is_correct),
+        text: item.text || null,
+        image: item.image || null,
+      }));
+      emit('input', value);
+    };
+
     // Initialize items from value prop
     watch(
         () => props.value,
@@ -162,8 +232,9 @@ export default {
           if (Array.isArray(newValue) && newValue.length > 0) {
             items.value = newValue.map((item, index) => ({
               _id: item._id || `item_${Date.now()}_${index}`,
-              is_correct: item.is_correct || false,
+              is_correct: Boolean(item.is_correct),
               text: item.text || null,
+              image: item.image || null,
             }));
           } else {
             items.value = [];
@@ -182,17 +253,22 @@ export default {
     });
 
     const correctAnswersCount = computed(() => {
-      return items.value.filter(item => item.is_correct).length;
+      if (!Array.isArray(items.value)) return 0;
+      return items.value.filter(item => Boolean(item.is_correct)).length;
     });
 
     const validationError = computed(() => {
-      if (items.value.length === 0 || !props.has_correct_answer) return null;
+      if (!Array.isArray(items.value) || items.value.length === 0 || !props.has_correct_answer) {
+        return null;
+      }
 
-      if (correctAnswersCount.value < props.min_correct_answers) {
+      const count = correctAnswersCount.value;
+
+      if (count < props.min_correct_answers) {
         return `Please select at least ${props.min_correct_answers} correct answer${props.min_correct_answers > 1 ? 's' : ''}.`;
       }
 
-      if (correctAnswersCount.value > props.max_correct_answers) {
+      if (count > props.max_correct_answers) {
         return `You can only select up to ${props.max_correct_answers} correct answer${props.max_correct_answers > 1 ? 's' : ''}.`;
       }
 
@@ -201,37 +277,55 @@ export default {
 
     // Methods
     const getItemLabel = (index) => {
+      if (typeof props.template !== 'string') return `Option ${index}`;
       return props.template.replace('{{ index }}', index);
     };
 
     const addItem = () => {
-      if (canAddMore.value) {
-        const newItem = {
-          _id: `item_${Date.now()}`,
-          is_correct: false,
-          text: null,
-        };
-        items.value.push(newItem);
-        emitUpdate();
+      if (!canAddMore.value) return;
+
+      const newItem = {
+        _id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        is_correct: false,
+        text: null,
+        image: null,
+      };
+
+      if (!Array.isArray(items.value)) {
+        items.value = [];
       }
+
+      items.value.push(newItem);
+      emitUpdate();
     };
 
     const removeItem = (index) => {
-      if (items.value.length > props.min) {
-        items.value.splice(index, 1);
-        emitUpdate();
+      if (!Array.isArray(items.value) || items.value.length <= props.min) {
+        return;
       }
+
+      items.value.splice(index, 1);
+      emitUpdate();
     };
 
     const updateItemText = (index, text) => {
-      if (items.value[index]) {
-        items.value[index].text = text;
-        emitUpdate();
-      }
+      if (!Array.isArray(items.value) || !items.value[index]) return;
+
+      items.value[index].text = text;
+      emitUpdate();
+    };
+
+    const updateItemImage = (index, image) => {
+      if (!Array.isArray(items.value) || !items.value[index]) return;
+
+      items.value[index].image = image;
+      emitUpdate();
     };
 
     const setCorrectAnswer = (index, isCorrect) => {
-      if (!props.has_correct_answer) return;
+      if (!props.has_correct_answer || !Array.isArray(items.value) || !items.value[index]) {
+        return;
+      }
 
       if (isCorrect) {
         // If max correct answers is 1, uncheck all others
@@ -241,25 +335,51 @@ export default {
           });
         } else {
           // Allow multiple selections but check max limit
-          const currentCorrectCount = items.value.filter(item => item.is_correct).length;
+          const currentCorrectCount = items.value.filter(item => Boolean(item.is_correct)).length;
           if (currentCorrectCount < props.max_correct_answers) {
             items.value[index].is_correct = true;
           }
         }
-      } else if (items.value[index]) {
+      } else {
         // Uncheck the selected item
         items.value[index].is_correct = false;
       }
+
       emitUpdate();
     };
 
-    const emitUpdate = () => {
-      const value = items.value.map(item => ({
-        _id: item._id,
-        is_correct: item.is_correct,
-        text: item.text,
-      }));
-      emit('input', value);
+    const handleDragEnd = () => {
+      emitUpdate();
+    };
+
+    const handleImageUpload = (index, imageData) => {
+      if (!Array.isArray(items.value) || !items.value[index]) return;
+
+      // v-upload component returns the file object or file ID
+      const imageId = imageData?.id || imageData;
+      items.value[index].image = imageId;
+      emitUpdate();
+    };
+
+    const clearImage = (index) => {
+      if (!Array.isArray(items.value) || !items.value[index]) return;
+
+      items.value[index].image = null;
+      emitUpdate();
+    };
+
+    const handleImageError = (index) => {
+      console.warn(`Invalid image UUID for item ${index}`);
+    };
+
+    const getImageUrl = (fileId) => {
+      if (!fileId) return '';
+      return `/assets/${fileId}`;
+    };
+
+    const getImageDisplayName = (fileId) => {
+      if (!fileId) return '';
+      return `Image: ${fileId.substring(0, 8)}...`;
     };
 
     return {
@@ -271,7 +391,14 @@ export default {
       addItem,
       removeItem,
       updateItemText,
+      updateItemImage,
       setCorrectAnswer,
+      handleDragEnd,
+      handleImageUpload,
+      clearImage,
+      handleImageError,
+      getImageUrl,
+      getImageDisplayName,
     };
   },
 };
@@ -478,5 +605,97 @@ export default {
 .repeater-item .interface-input-block-editor .ce-popover,
 .repeater-item .interface-input-block-editor .ce-block-tunes-menu {
   z-index: 1000 !important;
+}
+
+/* Image field styling */
+.image-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.image-upload-area {
+  width: 100%;
+}
+
+.image-selected {
+  position: relative;
+}
+
+.image-preview {
+  position: relative;
+  border: var(--border-width) solid var(--border-normal);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  background: var(--background-normal);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.image-preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(38, 50, 56, 0) 0%, rgba(38, 50, 56, 0.3) 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.image-preview:hover::before {
+  opacity: 1;
+}
+
+.preview-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--border-radius);
+  transition: transform 0.2s ease;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: var(--border-radius);
+  padding: 8px;
+}
+
+.image-preview:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-overlay .v-button {
+  --v-button-color: var(--theme--form--field--input--foreground-subdued);
+  --v-button-background-color: var(--white);
+  --v-button-color-hover: var(--theme--form--field--input--foreground);
+  --v-button-background-color-hover: var(--white);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-info {
+  padding: 8px 0;
+  text-align: center;
+  color: var(--foreground-subdued);
+}
+
+.image-info small {
+  font-size: 12px;
 }
 </style>

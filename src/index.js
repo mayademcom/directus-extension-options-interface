@@ -109,6 +109,38 @@ export default defineInterface({
             },
         },
         {
+            field: 'enable_images',
+            name: 'Enable Images',
+            type: 'boolean',
+            meta: {
+                interface: 'boolean',
+                width: 'full',
+                options: {
+                    label: 'Allow image uploads for options'
+                }
+            },
+            schema: {
+                default_value: false,
+            },
+        },
+        {
+            field: 'image_folder',
+            name: 'Image Folder',
+            type: 'string',
+            meta: {
+                interface: 'input',
+                width: 'full',
+                conditions: [
+                    {
+                        name: 'enable_images',
+                        rule: {
+                            _eq: true,
+                        },
+                    },
+                ],
+            }
+        },
+        {
             field: 'content_tools',
             name: 'Available Content Tools',
             type: 'json',
