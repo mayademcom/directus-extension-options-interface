@@ -76,10 +76,16 @@
               </div>
 
               <div v-if="enable_images" class="field-group">
-                <label class="field-label">Option Image</label>
+                <label
+                    class="field-label"
+                    :for="`image-upload-${item._id}`"
+                >
+                  Option Image
+                </label>
                 <div class="image-field">
                   <div v-if="!item.image" class="image-upload-area">
                     <v-upload
+                        :id="`image-upload-${item._id}`"
                         from-url
                         :from-user="true"
                         :from-library="true"
@@ -98,7 +104,7 @@
                     <div class="image-preview">
                       <img
                           :src="getImageUrl(item.image)"
-                          alt="Option image preview"
+                          :alt="`Option ${index + 1} preview`"
                           class="preview-image"
                           @error="handleImageError(index)"
                       />
@@ -110,6 +116,7 @@
                             rounded
                             v-tooltip="'Remove Image'"
                             :disabled="disabled"
+                            :aria-label="`Remove image for option ${index + 1}`"
                         >
                           <v-icon name="delete" />
                         </v-button>
@@ -123,12 +130,18 @@
               </div>
 
               <div class="field-group">
-                <label class="field-label">Option Content</label>
+                <label
+                    class="field-label"
+                    :for="`block-editor-${item._id}`"
+                >
+                  Option Content
+                </label>
                 <div class="block-editor-wrapper">
                   <interface-input-block-editor
+                      :id="`block-editor-${item._id}`"
                       :value="item.text"
                       @input="updateItemText(index, $event)"
-                      aria-label="Option content"
+                      :aria-label="`Content for option ${index + 1}`"
                       placeholder="Enter option content..."
                       :tools="content_tools"
                       :bordered="true"
