@@ -281,11 +281,15 @@ export default {
       return props.template.replace('{{ index }}', index);
     };
 
+    const generateId = () => {
+      return `item_${Date.now()}_${crypto.getRandomValues(new Uint32Array(1))[0].toString(36)}`;
+    };
+
     const addItem = () => {
       if (!canAddMore.value) return;
 
       const newItem = {
-        _id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        _id: generateId(),
         is_correct: false,
         text: null,
         image: null,
