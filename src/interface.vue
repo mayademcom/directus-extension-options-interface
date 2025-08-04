@@ -208,7 +208,7 @@ export default {
     },
     image_folder: {
       type: String,
-      default: 'f6be9cef-b3f5-41da-9d86-6b4d3da6a4b4',
+      default: null,
     },
     content_tools: {
       type: Array,
