@@ -28,7 +28,7 @@
           v-else
           v-model="items"
           @end="emitUpdate"
-          item-key="_id"
+          item-key="id"
           handle=".drag-handle"
           class="repeater-items"
           :animation="200"
@@ -86,7 +86,7 @@
                       :tools="content_tools"
                       :bordered="true"
                       :disabled="disabled"
-                      :key="`block-editor-${item._id}`"
+                      :key="`block-editor-${item.id}`"
                   />
                 </div>
               </div>
@@ -107,6 +107,21 @@
 <script>
 import {computed, ref, watch} from 'vue';
 import draggable from 'vuedraggable';
+
+// UUID v4 generator function with modern browser support
+function generateUUID() {
+  // Use crypto.randomUUID() in modern browsers, fallback for older ones
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  // Fallback for older browsers
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 export default {
   name: 'MultipleChoiceOptionsInterface',
@@ -160,11 +175,21 @@ export default {
         () => props.value,
         (newValue) => {
           if (Array.isArray(newValue) && newValue.length > 0) {
-            items.value = newValue.map((item, index) => ({
-              _id: item._id || `item_${Date.now()}_${index}`,
-              is_correct: item.is_correct || false,
-              text: item.text || null,
-            }));
+            items.value = newValue.map((item, index) => {
+              // Convert existing _id to id or generate new UUID
+              let itemId = item.id || item._id;
+
+              // If no existing ID or timestamp-based ID, generate new UUID
+              if (!itemId || itemId.startsWith('item_')) {
+                itemId = generateUUID();
+              }
+
+              return {
+                id: itemId,
+                is_correct: item.is_correct || false,
+                text: item.text || null,
+              };
+            });
           } else {
             items.value = [];
           }
@@ -207,7 +232,7 @@ export default {
     const addItem = () => {
       if (canAddMore.value) {
         const newItem = {
-          _id: `item_${Date.now()}`,
+          id: generateUUID(),
           is_correct: false,
           text: null,
         };
@@ -255,7 +280,7 @@ export default {
 
     const emitUpdate = () => {
       const value = items.value.map(item => ({
-        _id: item._id,
+        id: item.id,
         is_correct: item.is_correct,
         text: item.text,
       }));
@@ -272,6 +297,7 @@ export default {
       removeItem,
       updateItemText,
       setCorrectAnswer,
+      emitUpdate,
     };
   },
 };
