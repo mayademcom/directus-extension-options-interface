@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.1.0](https://github.com/mayademcom/directus-extension-options-interface/compare/v1.0.0...v1.1.0) (2025-08-26)
+
+
+### Features
+
+* **COK-657:** Refactors item identification to use UUIDs ([0091426](https://github.com/mayademcom/directus-extension-options-interface/commit/0091426b86af096621df0ceee6f3fc234c5eafb0))
+
 # 1.0.0 (2025-06-11)
 
 
